@@ -35,7 +35,7 @@
     }
   </label>
 
-  @if (saveStatus() === Status.Error) {
+  @if (status() === Status.Error) {
     <div class="info">
       <p>Oh no! Something went wrong.</p>
     </div>
@@ -43,15 +43,15 @@
 
   <button
     class="btn"
-    [class.success]="saveStatus() === Status.Success"
+    [class.success]="status() === Status.Success"
     type="submit"
     [disabled]="
       !form.valid ||
       form.pristine ||
-      saveStatus() !== Status.Idle
+      status() !== Status.Idle
     "
   >
-    @switch (saveStatus()) {
+    @switch (status()) {
       @case (Status.Loading) {
         <span class="loader"></span>
         Saving

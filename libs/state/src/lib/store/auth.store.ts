@@ -44,11 +44,25 @@ export const AuthStore = signalStore(
         router.navigate(['/']);
         setTimeout(() => patchState(store, { status: Status.Idle }));
       },
+      getSavedUser(): void {
+        const token = window.localStorage.getItem('user-token');
+        if (token) {
+          const user: User = JSON.parse(token);
+          if (user.id && user.name && user.permissions) {
+            patchState(store, {
+              user,
+            });
+          }
+        }
+      },
       login: rxMethod<void>(
         pipe(
           tap(() => patchState(store, { status: Status.Loading })),
           switchMap(() =>
             authService.getUser().pipe(
+              tap((user) =>
+                window.localStorage.setItem('user-token', JSON.stringify(user)),
+              ),
               tapResponse({
                 next: (user) =>
                   patchState(store, {

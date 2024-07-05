@@ -1,12 +1,19 @@
-import {Component, computed, inject, input, output, OutputEmitterRef} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { animate, style, transition, trigger } from '@angular/animations';
-import { mergeMap, timer, map, take, scan, pipe } from 'rxjs';
+import {Component, input, output, OutputEmitterRef} from '@angular/core';
+import {toObservable, toSignal} from '@angular/core/rxjs-interop';
+import {animate, style, transition, trigger} from '@angular/animations';
 
-import { Status } from '@shared/models';
+import {
+  mergeMap,
+  timer,
+  map,
+  take,
+  scan,
+  pipe,
+  filter,
+  OperatorFunction,
+} from 'rxjs';
 
-import { EventNotificationService } from '../services/event-notification.service';
-import { Toast } from '../models';
+import {Toast} from '../models';
 
 @Component({
   selector: 'lib-toaster',
@@ -17,30 +24,32 @@ import { Toast } from '../models';
   animations: [
     trigger('animation', [
       transition(':enter', [
-        style({ opacity: 0, transform: 'translateX(100%)' }),
+        style({opacity: 0, transform: 'translateX(100%)'}),
         animate(
           '250ms cubic-bezier(0.0, 0.0, 0.2, 1)',
-          style({ opacity: 1, transform: 'translateX(0)' }),
+          style({opacity: 1, transform: 'translateX(0)'}),
         ),
       ]),
       transition(':leave', [
         animate(
           '200ms cubic-bezier(0.4, 0.0, 1, 1)',
-          style({ opacity: 0, transform: 'translateX(100%)' }),
+          style({opacity: 0, transform: 'translateX(100%)'}),
         ),
       ]),
     ]),
   ],
 })
 export class ToasterComponent {
-  readonly #errorNotificationService = inject(EventNotificationService);
+  readonly reload: OutputEmitterRef<void> = output<void>();
+  readonly hasLoadingError = input.required<boolean>();
+  readonly newToast = input<Toast>();
+  readonly displayDuration = input<number>();
 
-  reload: OutputEmitterRef<void> = output<void>()
-  readonly dataStatus = input.required<Status>();
-  protected readonly statusError = computed(() => this.dataStatus() === Status.Error);
-
-  protected readonly toastsRx = toSignal(
-    this.#errorNotificationService.eventStream$.pipe(this.#pullIntoArrayFor(3000)),
+  protected readonly activeToasts = toSignal(
+    toObservable(this.newToast).pipe(
+      filter((x) => !!x) as OperatorFunction<Toast | undefined, Toast>,
+      this.#pullIntoArrayFor(this.displayDuration() || 3000),
+    ),
   );
 
   #pullIntoArrayFor(displayFor: number) {
@@ -48,7 +57,7 @@ export class ToasterComponent {
       mergeMap((toast: Toast) =>
         timer(0, displayFor).pipe(
           take(2),
-          map((isDeferred) => ({ remove: !!isDeferred, toast })),
+          map((isDeferred) => ({remove: !!isDeferred, toast})),
         ),
       ),
       scan(

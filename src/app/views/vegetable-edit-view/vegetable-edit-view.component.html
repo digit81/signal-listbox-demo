@@ -1,21 +1,24 @@
 <main>
   <button
-    [routerLink]="['/vegetable-edit-view']"
+    data-test="back-btn"
+    [routerLink]="['/edit']"
     class="btn back"
     [disabled]="vegetableStore.saveStatus() === Status.Loading"
   >
     Back to list
   </button>
-  <h1>{{ activeVegetable() ? "Edit vegetable" : "Create new vegetable" }}</h1>
+  <h1>{{ activeVegetable() ? 'Edit vegetable' : 'Create new vegetable' }}</h1>
   @if (vegetableStore.status() === Status.Loading) {
-  <div class="info">
-    <span class="loader"></span>
-    <p>Loading vegetable data</p>
-  </div>
+    <div class="info">
+      <span class="loader"></span>
+      <p>Loading vegetable data</p>
+    </div>
   } @else {
-  <lib-vegetable-form
+    <lib-vegetable-form
     [vegetable]="activeVegetable()"
-    [saveStatus]="vegetableStore.saveStatus()"
+    [status]="vegetableStore.saveStatus()"
+    (clearStatus)="vegetableStore.resetSave()"
+    (save)="vegetableStore.save($event)"
   />
   }
 </main>

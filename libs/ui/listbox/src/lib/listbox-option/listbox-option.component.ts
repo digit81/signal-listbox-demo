@@ -13,7 +13,7 @@ import { Listbox } from '../listbox/listbox.component';
 @Component({
   selector: 'jm-option',
   template: `
-    <ng-content />
+    <span data-test='option-name'><ng-content /></span>
 
     @if (isSelected()) {
     <span class="marker" @jumpIn>✓</span>

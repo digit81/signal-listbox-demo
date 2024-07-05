@@ -77,6 +77,11 @@
         "jest": true
       },
       "rules": {}
+    },
+    {
+      "files": ["*.cy.{ts,js,tsx,jsx}", "cypress/**/*.{ts,js,tsx,jsx}"],
+      "rules": {}
     }
-  ]
+  ],
+  "extends": ["plugin:cypress/recommended"]
 }

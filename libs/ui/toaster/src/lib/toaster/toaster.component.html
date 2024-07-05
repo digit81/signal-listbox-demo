@@ -1,12 +1,13 @@
-@for (toast of toastsRx(); track toast.id) {
+@for (toast of activeToasts(); track toast.id) {
   <div
+    data-test="toast"
     class="toast"
     @animation
     [class.success]="toast.type === 'success'"
     [class.error]="toast.type === 'error'"
   >
     @switch (toast.type) {
-      @case ("success") {
+      @case ('success') {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24px"
@@ -18,7 +19,7 @@
           />
         </svg>
       }
-      @case ("error") {
+      @case ('error') {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24px"
@@ -35,7 +36,7 @@
   </div>
 }
 
-@if (statusError()) {
+@if (hasLoadingError()) {
   <div @animation class="toast error">
     <svg
       xmlns="http://www.w3.org/2000/svg"

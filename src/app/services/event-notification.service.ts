@@ -1,10 +1,13 @@
-import { Injectable, Signal, inject } from '@angular/core';
-import { filter, map, merge, pipe } from 'rxjs';
-import { FreeToast, Toast } from '../models';
-import { AuthStore } from '@state';
-import { VegetableStore } from '@state';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { Status } from '@shared/models';
+import {Injectable, Signal, inject} from '@angular/core';
+import {toObservable, toSignal} from '@angular/core/rxjs-interop';
+
+import {filter, map, merge, pipe} from 'rxjs';
+
+import {AuthStore} from '@state';
+import {VegetableStore} from '@state';
+
+import {Status} from '@shared/models';
+import {FreeToast, Toast} from 'libs/ui/toaster/src/lib/models';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +24,8 @@ export class EventNotificationService {
     this.#vegetableStore.saveStatus,
   ).pipe(this.#extractErrorSuccessToFreeToast(this.#vegetableStore.message));
 
-  readonly eventStream$ = merge(this.#authEvents$, this.#vegetableEvents$).pipe(
-    this.#addIdToToast(),
+  readonly latestEvent = toSignal(
+    merge(this.#authEvents$, this.#vegetableEvents$).pipe(this.#addIdToToast()),
   );
 
   #extractErrorSuccessToFreeToast(message: Signal<string>) {
@@ -40,6 +43,6 @@ export class EventNotificationService {
   }
 
   #addIdToToast() {
-    return map((toast: FreeToast, i): Toast => ({ ...toast, id: i + 1 }));
+    return map((toast: FreeToast, i): Toast => ({...toast, id: i + 1}));
   }
 }

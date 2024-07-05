@@ -3,7 +3,7 @@
   "compilerOptions": {
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
@@ -14,8 +14,8 @@
     "paths": {
       "@app/*": ["src/app/*"],
       "@data-layer": ["libs/data-layer/src/index.ts"],
-      "@state": ["libs/state/src/index.ts"],
       "@shared/models": ["libs/shared/models/src/index.ts"],
+      "@state": ["libs/state/src/index.ts"],
       "@ui/card": ["libs/ui/card/src/index.ts"],
       "@ui/listbox": ["libs/ui/listbox/src/index.ts"],
       "@ui/toaster": ["libs/ui/toaster/src/index.ts"],

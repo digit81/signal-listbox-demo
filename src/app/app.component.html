@@ -1,7 +1,7 @@
 <nav>
   <div class="content">
     @if (authStore.user(); as user) {
-      <p @jumpIn>Hi {{ user.name }}!</p>
+      <p @jumpIn data-test="greeting">Hi {{ user.name }}!</p>
     }
     <button
       type="button"
@@ -9,12 +9,13 @@
       [class.secondary]="authStore.isLoggedIn()"
       (click)="swapUser()"
       [disabled]="authStore.status() !== Status.Idle"
+      data-test="login-btn"
     >
       @if (authStore.status() === Status.Loading) {
         <span class="loader"></span>
         Logging in
       } @else {
-        {{ authStore.isLoggedIn() ? "Log out" : "Log in" }}
+        {{ authStore.isLoggedIn() ? 'Log out' : 'Log in' }}
       }
     </button>
   </div>
@@ -23,6 +24,7 @@
 <router-outlet />
 
 <lib-toaster
-  [dataStatus]="vegetableStore.status()"
   (reload)="onReload()"
+  [hasLoadingError]="vegetableStore.status() === Status.Error"
+  [newToast]="eventNotificationService.latestEvent()"
 />

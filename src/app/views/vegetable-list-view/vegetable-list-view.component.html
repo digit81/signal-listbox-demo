@@ -12,6 +12,7 @@
     <div class="list">
       @for (vegetable of vegetableStore.vegetables(); track vegetable.id) {
         <article
+          data-test="editor-item"
           class="row"
           [class.deleting]="vegetableStore.deletingIds().has(vegetable.id)"
         >
@@ -21,7 +22,8 @@
           </section>
           <section class="editBar">
             <button
-              [routerLink]="['/vegetable-edit-view', vegetable.id]"
+              data-test="edit-btn"
+              [routerLink]="['/edit', vegetable.id]"
               class="btn icon-btn"
               [disabled]="
                 vegetableStore.deletingIds().has(vegetable.id) ||
@@ -42,6 +44,7 @@
             </button>
 
             <button
+              data-test="delete-btn"
               type="button"
               class="btn icon-btn"
               (click)="vegetableStore.delete(vegetable.id)"
@@ -66,6 +69,7 @@
         </article>
       }
       <button
+        data-test="addnew-btn"
         routerLink="/create"
         class="btn"
         [disabled]="!authStore.canCreate()"

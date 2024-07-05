@@ -11,7 +11,7 @@ export class AuthService {
   readonly #http = inject(HttpClient);
 
   getUser() {
-    const id = Math.floor(Math.random() * 4) + 1;
+    const id = Math.floor(Math.random() * 3) + 1;
     return this.#http.get<User>(this.#USERS_URL + '/' + id);
   }
 }
